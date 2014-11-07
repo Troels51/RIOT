@@ -7,7 +7,7 @@
  */
 
 /**
- * @defgroup    board_atsamr21-xpro Atmel SAM R21 Xplained Pro
+ * @defgroup    board_samr21-xpro Atmel SAM R21 Xplained Pro
  * @ingroup     boards
  * @brief       Support for the Atmel SAM R21 Xplained Pro board.
  * @{
@@ -35,7 +35,7 @@ extern "C" {
 /**
  * Assign the hardware timer
  */
-#define HW_TIMER            TIMER_1 //TIMER_1 is the only 32bit
+#define HW_TIMER            TIMER_1
 
 /**
  * @name Define UART device and baudrate for stdio
@@ -43,7 +43,7 @@ extern "C" {
  */
 #define STDIO               UART_0
 #define STDIO_BAUDRATE      (115200U)
-#define STDIO_BUFSIZE		(64U)
+#define STDIO_BUFSIZE		    (64U)
 /** @} */
 
 /**
@@ -58,7 +58,7 @@ extern "C" {
  * @name Macros for controlling the on-board LEDs.
  * @{
  */
-#define LED_ON              (LED_PORT.OUTCLR.reg = LED_PIN)//ON = LOW
+#define LED_ON              (LED_PORT.OUTCLR.reg = LED_PIN)
 #define LED_OFF             (LED_PORT.OUTSET.reg = LED_PIN)
 #define LED_TOGGLE          (LED_PORT.OUTTGL.reg = LED_PIN)
 
@@ -66,9 +66,9 @@ extern "C" {
 #define LED_GREEN_ON        /* not available */
 #define LED_GREEN_OFF       /* not available */
 #define LED_GREEN_TOGGLE    /* not available */
-#define LED_ORANGE_ON        /* not available */
-#define LED_ORANGE_OFF       /* not available */
-#define LED_ORANGE_TOGGLE    /* not available */
+#define LED_ORANGE_ON       /* not available */
+#define LED_ORANGE_OFF      /* not available */
+#define LED_ORANGE_TOGGLE   /* not available */
 #define LED_RED_ON          LED_ON
 #define LED_RED_OFF         LED_OFF
 #define LED_RED_TOGGLE      LED_TOGGLE
