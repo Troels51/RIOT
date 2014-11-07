@@ -20,7 +20,6 @@
 
 #include <stdint.h>
 #include "crash.h"
- #include "ps.h"
 /**
  * memory markers as defined in the linker script
  */
@@ -101,7 +100,6 @@ void isr_debug_mon(void)
 
 void isr_hard_fault(void)
 {
-    //thread_print_all();
     core_panic(HARD_FAULT, "HARD FAULT");
     while (1) {asm ("nop");}
 }
