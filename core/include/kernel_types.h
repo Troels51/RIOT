@@ -18,7 +18,6 @@
  * @author      Ludwig Ortmann <ludwig.ortmann@fu-berlin.de>
  */
 
-
 #ifndef KERNEL_TYPES_H
 #define KERNEL_TYPES_H
 
