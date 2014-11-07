@@ -27,7 +27,6 @@
 #include "kernel_types.h"
 #include "transceiver.h"
 #include "hwtimer.h"
-#include "hwtimer.h"
 
 #define ENABLE_DEBUG (0)
 #include "debug.h"
@@ -365,7 +364,9 @@ int at86rf231_set_channel(unsigned int channel)
 #endif
         return -1;
     }
+
     at86rf231_reg_write(AT86RF231_REG__PHY_CC_CCA, (radio_channel & AT86RF231_PHY_CC_CCA_MASK__CHANNEL));
+
     return radio_channel;
 }
 
