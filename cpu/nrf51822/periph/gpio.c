@@ -136,7 +136,6 @@ static inline int get_pin(gpio_t dev)
     return -1;
 }
 
-
 int gpio_init_out(gpio_t dev, gpio_pp_t pullup)
 {
     int pin = get_pin(dev);
