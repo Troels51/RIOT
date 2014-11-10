@@ -64,7 +64,7 @@
 #if ENABLE_DEBUG
 #define DEBUG_ENABLED
 #undef TRANSCEIVER_STACK_SIZE
-#define TRANSCEIVER_STACK_SIZE      (1024)
+#define TRANSCEIVER_STACK_SIZE      (KERNEL_CONF_STACKSIZE_MAIN)
 #endif
 #include "debug.h"
 
@@ -290,6 +290,7 @@ static void *run(void *arg)
         /* only makes sense for messages for upper layers */
         transceiver_command_t *cmd = (transceiver_command_t *) m.content.ptr;
         DEBUG("transceiver: Transceiver: Message received, type: %02X\n", m.type);
+
         switch (m.type) {
             case RCV_PKT_CC1020:
             case RCV_PKT_CC1100:
@@ -300,7 +301,7 @@ static void *run(void *arg)
                 receive_packet(m.type, m.content.value);
                 break;
 
-            case SND_PKT:                
+            case SND_PKT:
                 response = send_packet(cmd->transceivers, cmd->data);
                 m.content.value = response;
                 msg_reply(&m, &m);
@@ -353,7 +354,7 @@ static void *run(void *arg)
                 msg_reply(&m, &m);
                 break;
 
-            case SET_PAN:                
+            case SET_PAN:
                 *((int32_t *) cmd->data) = set_pan(cmd->transceivers, cmd->data);
                 msg_reply(&m, &m);
                 break;
@@ -579,10 +580,10 @@ void receive_cc2420_packet(ieee802154_packet_t *trans_p)
 
     if (trans_p->frame.fcf.dest_addr_m == IEEE_802154_SHORT_ADDR_M) {
         if (trans_p->frame.fcf.src_addr_m == IEEE_802154_SHORT_ADDR_M) {
-            //DEBUG("Packet %p was from %" PRIu16 " to %" PRIu16 ", size: %u\n", trans_p, *((uint16_t *) &trans_p->frame.src_addr[0]), *((uint16_t *) &trans_p->frame.dest_addr), trans_p->frame.payload_len);
+            DEBUG("Packet %p was from %" PRIu16 " to %" PRIu16 ", size: %u\n", trans_p, *((uint16_t *) &trans_p->frame.src_addr[0]), *((uint16_t *) &trans_p->frame.dest_addr), trans_p->frame.payload_len);
         }
         else if (trans_p->frame.fcf.src_addr_m == IEEE_802154_LONG_ADDR_M) {
-            //DEBUG("Packet %p was from %016" PRIx64 " to %" PRIu16 ", size: %u\n", trans_p, *((uint64_t *) &trans_p->frame.src_addr[0]), *((uint16_t *) &trans_p->frame.dest_addr), trans_p->frame.payload_len);
+            DEBUG("Packet %p was from %016" PRIx64 " to %" PRIu16 ", size: %u\n", trans_p, *((uint64_t *) &trans_p->frame.src_addr[0]), *((uint16_t *) &trans_p->frame.dest_addr), trans_p->frame.payload_len);
 
         }
         else {
@@ -592,10 +593,10 @@ void receive_cc2420_packet(ieee802154_packet_t *trans_p)
     }
     else if (trans_p->frame.fcf.dest_addr_m == IEEE_802154_LONG_ADDR_M) {
         if (trans_p->frame.fcf.src_addr_m == IEEE_802154_SHORT_ADDR_M) {
-            //DEBUG("Packet %p was from %" PRIu16 " to %016" PRIx64 ", size: %u\n", trans_p, *((uint16_t *) &trans_p->frame.src_addr[0]), *((uint64_t *) &trans_p->frame.dest_addr), trans_p->frame.payload_len);
+            DEBUG("Packet %p was from %" PRIu16 " to %016" PRIx64 ", size: %u\n", trans_p, *((uint16_t *) &trans_p->frame.src_addr[0]), *((uint64_t *) &trans_p->frame.dest_addr), trans_p->frame.payload_len);
         }
         else if (trans_p->frame.fcf.src_addr_m == IEEE_802154_LONG_ADDR_M) {
-            //DEBUG("Packet %p was from %016" PRIx64 " to %016" PRIx64 ", size: %u\n", trans_p, *((uint64_t *) &trans_p->frame.src_addr[0]), *((uint16_t *) &trans_p->frame.dest_addr), trans_p->frame.payload_len);
+            DEBUG("Packet %p was from %016" PRIx64 " to %016" PRIx64 ", size: %u\n", trans_p, *((uint64_t *) &trans_p->frame.src_addr[0]), *((uint16_t *) &trans_p->frame.dest_addr), trans_p->frame.payload_len);
 
         }
         else {
@@ -661,7 +662,7 @@ void receive_at86rf231_packet(ieee802154_packet_t *trans_p)
     trans_p->rssi = p->rssi;
     trans_p->crc = p->crc;
     trans_p->lqi = p->lqi;
-    memcpy(&trans_p->frame, &p->frame, sizeof(p->frame));//p->length);
+    memcpy(&trans_p->frame, &p->frame, p->length);
     memcpy(&data_buffer[transceiver_buffer_pos * AT86RF231_MAX_DATA_LENGTH], p->frame.payload,
            p->frame.payload_len);
     trans_p->frame.payload = (uint8_t *) & (data_buffer[transceiver_buffer_pos * AT86RF231_MAX_DATA_LENGTH]);
@@ -672,22 +673,19 @@ void receive_at86rf231_packet(ieee802154_packet_t *trans_p)
 
     if (trans_p->frame.fcf.dest_addr_m == IEEE_802154_SHORT_ADDR_M) {
         if (trans_p->frame.fcf.src_addr_m == IEEE_802154_SHORT_ADDR_M) {
-            uint16_t src_addr, dest_addr;
-            memcpy(&src_addr, trans_p->frame.src_addr, 2);
-            memcpy(&dest_addr, trans_p->frame.dest_addr, 2);
-            DEBUG("Packet %p was from %" PRIu16 " to %" PRIu16 ", size: %u\n", trans_p, src_addr, dest_addr, trans_p->frame.payload_len);
+            DEBUG("Packet %p was from %" PRIu16 " to %" PRIu16 ", size: %u\n", trans_p, *((uint16_t *) &trans_p->frame.src_addr[0]), *((uint16_t *) &trans_p->frame.dest_addr), trans_p->frame.payload_len);
         }
         else {
-            //DEBUG("Packet %p was from %016" PRIx64 " to %" PRIu16 ", size: %u\n", trans_p, *((uint64_t *) &trans_p->frame.src_addr[0]), *((uint16_t *) &trans_p->frame.dest_addr), trans_p->frame.payload_len);
+            DEBUG("Packet %p was from %016" PRIx64 " to %" PRIu16 ", size: %u\n", trans_p, *((uint64_t *) &trans_p->frame.src_addr[0]), *((uint16_t *) &trans_p->frame.dest_addr), trans_p->frame.payload_len);
 
         }
     }
     else {
         if (trans_p->frame.fcf.src_addr_m == IEEE_802154_SHORT_ADDR_M) {
-            //DEBUG("Packet %p was from %" PRIu16 " to %016" PRIx64 ", size: %u\n", trans_p, *((uint16_t *) &trans_p->frame.src_addr[0]), *((uint64_t *) &trans_p->frame.dest_addr), trans_p->frame.payload_len);
+            DEBUG("Packet %p was from %" PRIu16 " to %016" PRIx64 ", size: %u\n", trans_p, *((uint16_t *) &trans_p->frame.src_addr[0]), *((uint64_t *) &trans_p->frame.dest_addr), trans_p->frame.payload_len);
         }
         else {
-            //DEBUG("Packet %p was from %016" PRIx64 " to %016" PRIx64 ", size: %u\n", trans_p, *((uint64_t *) &trans_p->frame.src_addr[0]), *((uint16_t *) &trans_p->frame.dest_addr), trans_p->frame.payload_len);
+            DEBUG("Packet %p was from %016" PRIx64 " to %016" PRIx64 ", size: %u\n", trans_p, *((uint64_t *) &trans_p->frame.src_addr[0]), *((uint16_t *) &trans_p->frame.dest_addr), trans_p->frame.payload_len);
 
         }
     }
