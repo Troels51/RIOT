@@ -86,6 +86,7 @@ void init_trickle(void)
     timer_over_pid = thread_create(timer_over_buf, TRICKLE_TIMER_STACKSIZE,
                                    PRIORITY_MAIN - 1, CREATE_STACKTEST,
                                    trickle_timer_over, NULL, "trickle_timer_over");
+
     interval_over_pid = thread_create(interval_over_buf, TRICKLE_INTERVAL_STACKSIZE,
                                       PRIORITY_MAIN - 1, CREATE_STACKTEST,
                                       trickle_interval_over, NULL, "trickle_interval_over");
