@@ -285,7 +285,7 @@ int sixlowpan_mac_send_data(int if_id,
                                            payload, (size_t)payload_len);
         }
         else if (dest_len == 2) {
-            return net_if_send_packet(if_id, ((net_if_eui64_t*)dest)->uint16[0],
+            return net_if_send_packet(if_id, NTOHS((*((net_if_eui64_t*)dest)).uint16[0]),
                                       payload, (size_t)payload_len);
         }
     }
