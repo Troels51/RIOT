@@ -1,0 +1,5 @@
+<<<<<<< Updated upstream
+FEATURES_PROVIDED = periph_gpio periph_random periph_cpuid
+=======
+FEATURES_PROVIDED = periph_gpio
+>>>>>>> Stashed changes
