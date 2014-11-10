@@ -319,8 +319,6 @@ void icmpv6_send_echo_reply(ipv6_addr_t *destaddr, uint16_t id, uint16_t seq, ui
 /* send router solicitation message - RFC4861 section 4.1 */
 void icmpv6_send_router_sol(uint8_t sllao)
 {
-    DEBUG("icmpv6_send_router_sol\n");
-
     uint16_t packet_length;
 
     ipv6_buf = ipv6_get_buf();
@@ -516,8 +514,6 @@ lowpan_context_t *abr_get_context(ndp_a6br_cache_t *abr, uint8_t cid);
 void icmpv6_send_router_adv(ipv6_addr_t *addr, uint8_t sllao, uint8_t mtu, uint8_t pi,
                             uint8_t sixco, uint8_t abro)
 {
-    DEBUG("icmpv6_send_router_adv\n");
-
     int if_id = 0;      // TODO: get this somehow
     uint16_t packet_length;
     lowpan_context_t *contexts = NULL;
@@ -908,7 +904,6 @@ void recv_rtr_adv(void)
 void icmpv6_send_neighbor_sol(ipv6_addr_t *src, ipv6_addr_t *dest, ipv6_addr_t *targ,
                               uint8_t sllao, uint8_t aro)
 {
-    DEBUG("icmpv6_send_neighbor_sol\n");
     uint16_t packet_length;
     int if_id = 0;          // TODO: get this somehow
     ipv6_net_if_hit_t hit;
@@ -1191,7 +1186,6 @@ void recv_nbr_sol(void)
 void icmpv6_send_neighbor_adv(ipv6_addr_t *src, ipv6_addr_t *dst, ipv6_addr_t *tgt,
                               uint8_t rso, uint8_t sllao, uint8_t aro)
 {
-    DEBUG("icmpv6_send_neighbor_adv \n");
     int if_id = 0;              // TODO: get this somehow
     uint16_t packet_length;
 
@@ -1512,6 +1506,7 @@ ndp_neighbor_cache_t *ndp_neighbor_cache_search(ipv6_addr_t *ipaddr)
 ndp_neighbor_cache_t *ndp_get_ll_address(ipv6_addr_t *ipaddr)
 {
     ndp_neighbor_cache_t *nce = ndp_neighbor_cache_search(ipaddr);
+
     if (nce == NULL || nce->type == NDP_NCE_TYPE_GC ||
         nce->state == NDP_NCE_STATUS_INCOMPLETE) {
         // TODO: send neighbor solicitation, wait, and recheck cache
