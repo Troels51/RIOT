@@ -79,7 +79,7 @@
 
 /* Stack size for transceiver thread */
 #ifndef TRANSCEIVER_STACK_SIZE
-#define TRANSCEIVER_STACK_SIZE      (1024)
+#define TRANSCEIVER_STACK_SIZE      (KERNEL_CONF_STACKSIZE_DEFAULT)
 #endif
 
 #ifndef PAYLOAD_SIZE
