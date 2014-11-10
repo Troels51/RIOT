@@ -85,17 +85,17 @@ void *radio(void *arg)
 
             p->processing--;
 #else
-            p = (radio_packet_p *) m.content.ptr;
+            p = (radio_packet_t *) m.content.ptr;
 
             printf("Got radio packet:\n");
             printf("\tLength:\t%u\n", p->length);
-            printf("\tSrc:\t%u\n", p->frame.src);
-            printf("\tDst:\t%u\n", p->frame.dst);
+            printf("\tSrc:\t%u\n", p->src);
+            printf("\tDst:\t%u\n", p->dst);
             printf("\tLQI:\t%u\n", p->lqi);
             printf("\tRSSI:\t%u\n", p->rssi);
             printf("\tPLEN:\t%u\n", p->frame.payload_len);
 
-            for (i = 0; i < p->frame.length; i++) {
+            for (i = 0; i < p->length; i++) {
                 printf("%02X ", p->data[i]);
             }
 
