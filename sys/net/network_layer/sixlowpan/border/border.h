@@ -26,7 +26,7 @@
 #include "mutex.h"
 #include "transceiver.h"
 
-#include "sixlowpan/ip.h"
+#include "ip.h"
 #include "semaphore.h"
 
 extern ipv6_addr_t *abr_addr;
