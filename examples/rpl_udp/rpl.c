@@ -44,7 +44,7 @@ void rpl_udp_init(int argc, char **argv)
 {
     transceiver_command_t tcmd;
     msg_t m;
-    int8_t chan = RADIO_CHANNEL;
+    uint8_t chan = RADIO_CHANNEL;
 
     if (argc != 2) {
         printf("Usage: %s (r|n|h)\n", argv[0]);
@@ -105,7 +105,7 @@ void rpl_udp_init(int argc, char **argv)
         DEBUGF("Register at transceiver %02X\n", TRANSCEIVER);
         transceiver_register(TRANSCEIVER, monitor_pid);
         ipv6_register_packet_handler(monitor_pid);
-        sixlowpan_lowpan_register(monitor_pid);
+        //sixlowpan_lowpan_register(monitor_pid);
     }
     else {
         printf("ERROR: Unknown command '%c'\n", command);
