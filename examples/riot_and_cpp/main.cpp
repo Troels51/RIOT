@@ -32,12 +32,11 @@ extern "C" {
 
 #include <cstdio>
 #include <vector>
-
 #include "cpp_class.hpp"
 
 using namespace std;
 
-/* thread's stack */	
+/* thread's stack */
 char threadA_stack [KERNEL_CONF_STACKSIZE_MAIN];
 
 /* thread's function */
@@ -98,7 +97,7 @@ void *threadA_func(void *)
 
     ret_day = day_of_week(day, month, year);
     if (ret_day >= 0){
-        char day_of_week_table[][32] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};		
+        char day_of_week_table[][32] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
         printf("%s\n", day_of_week_table[ret_day]);
     }
 
