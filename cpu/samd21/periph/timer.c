@@ -27,18 +27,9 @@
 #include "periph/timer.h"
 #include "periph_conf.h"
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 #include "sched.h"
 #include "thread.h"
->>>>>>> samr21-porting
 #define ENABLE_DEBUG    (0)
-=======
-#include "sched.h"
-#include "thread.h"
-#define ENABLE_DEBUG    (1)
->>>>>>> d7dd0a5... 32bit hwtimer samd21
 #include "debug.h"
 
 
@@ -64,11 +55,7 @@ int timer_init(tim_t dev, unsigned int ticks_per_us, void (*callback)(int))
     GCLK->CLKCTRL.reg = (uint16_t)((GCLK_CLKCTRL_CLKEN | GCLK_CLKCTRL_GEN_GCLK0 | (TC4_GCLK_ID << GCLK_CLKCTRL_ID_Pos)));
     while (GCLK->STATUS.bit.SYNCBUSY);
     /* select the timer and enable the timer specific peripheral clocks */
-<<<<<<< HEAD
-    
-=======
 
->>>>>>> samr21-porting
     switch (dev) {
 #if TIMER_0_EN
         case TIMER_0:
@@ -157,6 +144,17 @@ int timer_set_absolute(tim_t dev, int channel, unsigned int value)
 #if TIMER_1_EN
         case TIMER_1:
             /* set timeout value */
+            TIMER_1_DEV.INTFLAG.bit.MC0 = 1;
+            TIMER_1_DEV.CC[0].reg = value;
+            TIMER_1_DEV.INTENSET.bit.MC0 = 1;
+
+
+            break;
+
+#endif
+#if TIMER_1_EN
+        case TIMER_1:
+            /* set timeout value */
             switch (channel) {
                 case 0:
                     TIMER_1_DEV.INTFLAG.bit.MC0 = 1;
@@ -177,24 +175,6 @@ int timer_set_absolute(tim_t dev, int channel, unsigned int value)
         default:
             return -1;
     }
-
-<<<<<<< HEAD
-<<<<<<< HEAD
-    DEBUG("Setting timer %i channel %i to %i\n", dev, channel, value);
-
-    /* set timeout value */
-    switch (channel) {
-        case 0:
-            tim->CC[0].reg = value;
-            tim->INTENSET.bit.MC0 = 1;
-            break;
-        case 1:
-            tim->CC[1].reg = value;
-            tim->INTENSET.bit.MC1 = 1;
-            break;
-        default:
-            return -1;
-    }
 =======
 
 
@@ -203,6 +183,9 @@ int timer_set_absolute(tim_t dev, int channel, unsigned int value)
 
 
 >>>>>>> samr21-porting
+
+
+
 
     return 1;
 }
@@ -221,6 +204,21 @@ int timer_clear(tim_t dev, int channel)
                 case 1:
                     TIMER_0_DEV.INTFLAG.bit.MC1 = 1;
                     TIMER_0_DEV.INTENCLR.bit.MC1 = 1;
+                    break;
+                default:
+                    return -1;
+            }
+                case 0:
+                    TIMER_1_DEV.INTFLAG.bit.MC0 = 1;
+                    TIMER_1_DEV.INTENCLR.bit.MC0 = 1;
+                    break;
+                case 1:
+                    TIMER_1_DEV.INTFLAG.bit.MC1 = 1;
+                    TIMER_1_DEV.INTENCLR.bit.MC1 = 1;
+                    break;
+                default:
+                    return -1;
+            }
                     break;
                 default:
                     return -1;
@@ -247,26 +245,15 @@ int timer_clear(tim_t dev, int channel)
         default:
             return -1;
     }
-
-    /* disable the channels interrupt */
-<<<<<<< HEAD
-<<<<<<< HEAD
-    switch (channel) {
-        case 0:
-            tim->INTENCLR.bit.MC0 = 1;
-            break;
-        case 1:
-            tim->INTENCLR.bit.MC1 = 1;
-            break;
-        default:
-            return -1;
-    }
 =======
 
 >>>>>>> d7dd0a5... 32bit hwtimer samd21
 =======
 
 >>>>>>> samr21-porting
+
+    /* disable the channels interrupt */
+
 
     return 1;
 }
@@ -276,18 +263,21 @@ unsigned int timer_read(tim_t dev)
     switch (dev) {
 #if TIMER_0_EN
         case TIMER_0:
-<<<<<<< HEAD
-<<<<<<< HEAD
-            tim = (&TIMER_0_DEV);
+            /* request syncronisation */
+            TIMER_0_DEV.READREQ.reg = TC_READREQ_RREQ | TC_READREQ_ADDR(0x10);
+            while (TIMER_0_DEV.STATUS.bit.SYNCBUSY);
+
+            return TIMER_0_DEV.COUNT.reg;
+            break;
 #endif
 #if TIMER_1_EN
         case TIMER_1:
-            tim = (&TIMER_1_DEV);
-#endif
-#if TIMER_2_EN
-        case TIMER_2:
-            tim = (&TIMER_0_DEV);
-=======
+            /* request syncronisation */
+            TIMER_1_DEV.READREQ.reg = TC_READREQ_RREQ | TC_READREQ_ADDR(0x10);
+            while (TIMER_1_DEV.STATUS.bit.SYNCBUSY);
+
+            return TIMER_1_DEV.COUNT.reg;
+            break;
             /* request syncronisation */
             TIMER_0_DEV.READREQ.reg = TC_READREQ_RREQ | TC_READREQ_ADDR(0x10);
             while (TIMER_0_DEV.STATUS.bit.SYNCBUSY);
@@ -427,11 +417,12 @@ void TIMER_0_ISR(void)
         TIMER_0_DEV.INTENCLR.reg = TC_INTENCLR_MC0;
         config[TIMER_0].cb(0);
     }
-<<<<<<< HEAD
+
 <<<<<<< HEAD
     else if (TIMER_0_DEV.INTFLAG.bit.MC1 && TIMER_0_DEV.INTENSET.bit.MC1) {
-        TIMER_0_DEV.INTFLAG.bit.MC1 = 1;
-        config[TIMER_0].cb(1);
+        if(config[TIMER_0].cb){ //check for null
+            TIMER_0_DEV.INTENCLR.reg = TC_INTENCLR_MC1;
+            config[TIMER_0].cb(1);
 =======
 
     else if (TIMER_0_DEV.INTFLAG.bit.MC1 && TIMER_0_DEV.INTENSET.bit.MC1) {
@@ -451,6 +442,11 @@ void TIMER_0_ISR(void)
 >>>>>>> d7dd0a5... 32bit hwtimer samd21
 =======
 >>>>>>> samr21-porting
+        }
+    }
+
+    if (sched_context_switch_request) {
+        thread_yield();
     }
 }
 #endif /* TIMER_0_EN */
@@ -461,15 +457,6 @@ void TIMER_1_ISR(void)
 {
     DEBUG("\t\tISR1 \n");
     if (TIMER_1_DEV.INTFLAG.bit.MC0 && TIMER_1_DEV.INTENSET.bit.MC0) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-        TIMER_1_DEV.INTFLAG.bit.MC0 = 1;
-        config[TIMER_1].cb(0);
-    }
-    else if (TIMER_1_DEV.INTFLAG.bit.MC1 && TIMER_1_DEV.INTENSET.bit.MC1) {
-        TIMER_1_DEV.INTFLAG.bit.MC1 = 1;
-        config[TIMER_1].cb(1);
-=======
         if (config[TIMER_1].cb)
         {
             TIMER_1_DEV.INTFLAG.bit.MC0 = 1;
@@ -478,6 +465,18 @@ void TIMER_1_ISR(void)
         }
     }
     else if (TIMER_1_DEV.INTFLAG.bit.MC1 && TIMER_1_DEV.INTENSET.bit.MC1) {
+        if(config[TIMER_1].cb)
+        {
+            TIMER_1_DEV.INTFLAG.bit.MC1 = 1;
+            TIMER_1_DEV.INTENCLR.reg = TC_INTENCLR_MC1;
+            config[TIMER_1].cb(1);       
+=======
+        if (config[TIMER_1].cb)
+        {
+            TIMER_1_DEV.INTFLAG.bit.MC0 = 1;
+            TIMER_1_DEV.INTENCLR.reg = TC_INTENCLR_MC0;
+            config[TIMER_1].cb(0);
+        }
 =======
         if (config[TIMER_1].cb)
         {
@@ -500,17 +499,10 @@ void TIMER_1_ISR(void)
     }
 
 <<<<<<< HEAD
-
-#if TIMER_2_EN
-void TIMER_2_ISR(void)
-{
-    if (TIMER_2_DEV.INTFLAG.bit.MC0 && TIMER_2_DEV.INTENSET.bit.MC0) {
-        TIMER_2_DEV.INTFLAG.bit.MC0 = 1;
-        config[TIMER_2].cb(0);
     }
-    else if (TIMER_2_DEV.INTFLAG.bit.MC1 && TIMER_2_DEV.INTENSET.bit.MC1) {
-        TIMER_2_DEV.INTFLAG.bit.MC1 = 1;
-        config[TIMER_2].cb(1);
+
+    if (sched_context_switch_request) {
+            thread_yield();
 =======
     if (sched_context_switch_request) {
             thread_yield();
@@ -523,5 +515,5 @@ void TIMER_2_ISR(void)
             thread_yield();
 >>>>>>> samr21-porting
     }
-}
+#endif /* TIMER_1_EN */
 #endif /* TIMER_1_EN */

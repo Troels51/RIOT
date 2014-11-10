@@ -47,11 +47,6 @@
 #endif
 /** @} */
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> samr21-porting
 #define TRANSCEIVER_BUFFER_SIZE (5)
 
 
@@ -75,10 +70,6 @@ typedef enum {
  */
 
 #define CPUID_ID_LEN (128/8) //128 bits long, 16 bytes long
-<<<<<<< HEAD
->>>>>>> d7dd0a5... 32bit hwtimer samd21
-=======
->>>>>>> samr21-porting
 
 #endif /* __CPU_CONF_H */
 /** @} */

@@ -35,15 +35,7 @@ extern "C" {
 /**
  * Assign the hardware timer
  */
-<<<<<<< HEAD
-<<<<<<< HEAD
-#define HW_TIMER            TIMER_0
-=======
-#define HW_TIMER            TIMER_1 //TIMER_1 is the only 32bit
->>>>>>> d7dd0a5... 32bit hwtimer samd21
-=======
 #define HW_TIMER            TIMER_1
->>>>>>> samr21-porting
 
 /**
  * @name Define UART device and baudrate for stdio
