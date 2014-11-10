@@ -15,9 +15,9 @@ extern "C" {
 
 #define APP_VERSION "1.2"
 
-#define RADIO_CHANNEL   (11)
+#define RADIO_CHANNEL   (10)
 
-#define MONITOR_STACK_SIZE  (1024)
+#define MONITOR_STACK_SIZE  (KERNEL_CONF_STACKSIZE_MAIN)
 #define RCV_BUFFER_SIZE     (32)
 
 /* RPL shell command handlers */
