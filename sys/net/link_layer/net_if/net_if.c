@@ -407,6 +407,7 @@ int net_if_register(int if_id, kernel_pid_t pid)
 int net_if_get_eui64(net_if_eui64_t *eui64, int if_id, int force_generation)
 {
     uint64_t tmp;
+
     if (if_id < 0 || if_id > NET_IF_MAX || !interfaces[if_id].initialized) {
         DEBUG("Get EUI-64: No interface initialized with ID %d.\n", if_id);
         return 0;
@@ -535,7 +536,7 @@ int32_t net_if_get_pan_id(int if_id)
 
 }
 
-int32_t net_if_set_pan_id(int if_id, uint32_t pan_id)
+int32_t net_if_set_pan_id(int if_id, uint16_t pan_id)
 {
     if (if_id < 0 || if_id > NET_IF_MAX || !interfaces[if_id].initialized) {
         DEBUG("Set PAN ID: No interface initialized with ID %d.\n", if_id);
