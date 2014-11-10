@@ -23,6 +23,7 @@
 #include "inttypes.h"
 #include "trickle.h"
 #include "rpl.h"
+
 #define ENABLE_DEBUG    (0)
 #include "debug.h"
 
@@ -85,19 +86,15 @@ void init_trickle(void)
     timer_over_pid = thread_create(timer_over_buf, TRICKLE_TIMER_STACKSIZE,
                                    PRIORITY_MAIN - 1, CREATE_STACKTEST,
                                    trickle_timer_over, NULL, "trickle_timer_over");
-
     interval_over_pid = thread_create(interval_over_buf, TRICKLE_INTERVAL_STACKSIZE,
                                       PRIORITY_MAIN - 1, CREATE_STACKTEST,
                                       trickle_interval_over, NULL, "trickle_interval_over");
-
     dao_delay_over_pid = thread_create(dao_delay_over_buf, DAO_DELAY_STACKSIZE,
                                        PRIORITY_MAIN - 1, CREATE_STACKTEST,
                                        dao_delay_over, NULL, "dao_delay_over");
-
     rt_timer_over_pid = thread_create(routing_table_buf, RT_STACKSIZE,
                                       PRIORITY_MAIN - 1, CREATE_STACKTEST,
-                                      rt_timer_over, NULL, "rt_timer_over");    
-
+                                      rt_timer_over, NULL, "rt_timer_over");
 }
 
 void start_trickle(uint8_t DIOIntMin, uint8_t DIOIntDoubl,
@@ -218,7 +215,6 @@ static void *dao_delay_over(void *arg)
     (void) arg;
     while (1) {
         thread_sleep();
-        DEBUG("dao_delay_over before sleep \n");
 
         if ((ack_received == false) && (dao_counter < DAO_SEND_RETRIES)) {
             dao_counter++;
