@@ -42,7 +42,7 @@
 #endif
 #include "debug.h"
 
-#define RADIO_STACK_SIZE            (512+256)
+#define RADIO_STACK_SIZE            (KERNEL_CONF_STACKSIZE_MAIN)
 #define RADIO_RCV_BUF_SIZE          (64)
 #define RADIO_SENDING_DELAY         (1000)
 
@@ -274,7 +274,6 @@ int sixlowpan_mac_send_data(int if_id,
                             const void *payload,
                             uint8_t payload_len, uint8_t mcast)
 {
-
     if (mcast) {
         return net_if_send_packet_broadcast(IEEE_802154_SHORT_ADDR_M,
                                             payload,
@@ -286,8 +285,7 @@ int sixlowpan_mac_send_data(int if_id,
                                            payload, (size_t)payload_len);
         }
         else if (dest_len == 2) {
-            uint16_t destination = ((net_if_eui64_t*)dest)->uint16[0];
-            return net_if_send_packet(if_id, (destination),
+            return net_if_send_packet(if_id, ((net_if_eui64_t*)dest)->uint16[0],
                                       payload, (size_t)payload_len);
         }
     }
