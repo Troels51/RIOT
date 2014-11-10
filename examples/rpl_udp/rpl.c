@@ -35,7 +35,7 @@
 
 #define TRANSCEIVER TRANSCEIVER_DEFAULT
 
-//char monitor_stack_buffer[MONITOR_STACK_SIZE];
+char monitor_stack_buffer[MONITOR_STACK_SIZE];
 radio_address_t id;
 
 uint8_t is_root = 0;
@@ -44,7 +44,7 @@ void rpl_udp_init(int argc, char **argv)
 {
     transceiver_command_t tcmd;
     msg_t m;
-    int32_t chan = RADIO_CHANNEL;
+    int8_t chan = RADIO_CHANNEL;
 
     if (argc != 2) {
         printf("Usage: %s (r|n|h)\n", argv[0]);
@@ -95,17 +95,17 @@ void rpl_udp_init(int argc, char **argv)
         }
 
         DEBUGF("Start monitor\n");
-        // kernel_pid_t monitor_pid = thread_create(monitor_stack_buffer,
-        //                                          sizeof(monitor_stack_buffer),
-        //                                          PRIORITY_MAIN - 2,
-        //                                          CREATE_STACKTEST,
-        //                                          rpl_udp_monitor,
-        //                                          NULL,
-        //                                          "monitor");
-        // DEBUGF("Register at transceiver %02X\n", TRANSCEIVER);
-        // transceiver_register(TRANSCEIVER, monitor_pid);
-        // ipv6_register_packet_handler(monitor_pid);
-        // sixlowpan_lowpan_register(monitor_pid);
+        kernel_pid_t monitor_pid = thread_create(monitor_stack_buffer,
+                                                 sizeof(monitor_stack_buffer),
+                                                 PRIORITY_MAIN - 2,
+                                                 CREATE_STACKTEST,
+                                                 rpl_udp_monitor,
+                                                 NULL,
+                                                 "monitor");
+        DEBUGF("Register at transceiver %02X\n", TRANSCEIVER);
+        transceiver_register(TRANSCEIVER, monitor_pid);
+        ipv6_register_packet_handler(monitor_pid);
+        sixlowpan_lowpan_register(monitor_pid);
     }
     else {
         printf("ERROR: Unknown command '%c'\n", command);
@@ -127,7 +127,7 @@ void rpl_udp_init(int argc, char **argv)
     /* set channel to 10 */
     tcmd.transceivers = TRANSCEIVER;
     tcmd.data = &chan;
-    m.type = SET_CHANNEL; //SET
+    m.type = SET_CHANNEL;
     m.content.ptr = (void *) &tcmd;
 
     msg_send_receive(&m, &m, transceiver_pid);
