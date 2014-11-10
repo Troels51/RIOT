@@ -31,9 +31,9 @@ uint32_t old_state = 0;
 int main(void)
 {
     puts("GPIO driver test");
+
+
     puts("Setting GPIOs to output w/o pull resistor");
-
-
     for (int i = 0; i < GPIO_NUMOF; i++) {
         gpio_init_out(i, GPIO_NOPULL);
     }
