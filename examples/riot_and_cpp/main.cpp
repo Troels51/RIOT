@@ -79,29 +79,30 @@ int main()
 
     return 0;
 }
-/* thread A function implemetation */		
-void *threadA_func(void *)		
-{		
-    int day = 13, month = 6, year = 2014;		
-    int ret_day;		
+
+/* thread A function implemetation */
+void *threadA_func(void *)
+{
+    int day = 13, month = 6, year = 2014;
+    int ret_day;
 
     printf("******** Hello, you're in thread #%" PRIkernel_pid " ********\n", sched_active_pid);
-    printf("We'll test some C functions here!\n");		
-		
-    printf("\n-= hello function =-\n");		
-    hello();		
-		
-    printf("\n-= day_of_week function =-\n");		
-		
-    printf("day %d, month %d, year %d is ", day, month, year);		
-		
-    ret_day = day_of_week(day, month, year);		
-    if (ret_day >= 0){		
+    printf("We'll test some C functions here!\n");
+
+    printf("\n-= hello function =-\n");
+    hello();
+
+    printf("\n-= day_of_week function =-\n");
+
+    printf("day %d, month %d, year %d is ", day, month, year);
+
+    ret_day = day_of_week(day, month, year);
+    if (ret_day >= 0){
         char day_of_week_table[][32] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};		
-        printf("%s\n", day_of_week_table[ret_day]);		
-    }		
-		
-    printf("\nThis demo ends here, press Ctrl-C to exit (if you're on native)!\n");		
-		
-    return NULL;		
+        printf("%s\n", day_of_week_table[ret_day]);
+    }
+
+    printf("\nThis demo ends here, press Ctrl-C to exit (if you're on native)!\n");
+
+    return NULL;
 }
