@@ -37,11 +37,20 @@ extern "C" {
 
 using namespace std;
 
+/* thread's stack */		
+char threadA_stack [KERNEL_CONF_STACKSIZE_MAIN];
+
+/* thread's function */		
+void *threadA_func(void *arg);
 
 /* main */
 int main()
 {
     printf("\n************ RIOT and C++ demo program ***********\n");
+    printf("\n");
+
+     /* create thread A */		
+    thread_create(threadA_stack, sizeof(threadA_stack), 0, CREATE_WOUT_YIELD, threadA_func, NULL, "thread A");
     printf("******** Hello, you're in thread #%" PRIkernel_pid " ********\n", sched_active_pid);
     printf("The vector vInts has been filled with %d numbers.\n", (int)vInts.size());
 
