@@ -78,7 +78,7 @@
 #include "periph/cpuid.h"
 #endif
 
-#define ENABLE_DEBUG (1)
+#define ENABLE_DEBUG (0)
 #if ENABLE_DEBUG
 #define DEBUG_ENABLED
 #endif
@@ -180,6 +180,7 @@ void auto_init_net_if(void)
         }
 
 #endif /* CPUID_ID_LEN && defined(MODULE_HASHES) */
+
         if (net_if_get_pan_id(iface) <= 0) {
             DEBUG("Auto init PAN ID on interface %d to 0x%04x\n", iface, CONF_PAN_ID);
             DEBUG("Change this value at compile time with macro CONF_PAN_ID\n");
