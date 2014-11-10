@@ -199,8 +199,8 @@ int sixlowpan_lowpan_sendto(int if_id, const void *dest, int dest_len,
         if (!lowpan_iphc_encoding(if_id, dest, dest_len, ipv6_buf, data)) {
             return -1;
         }
-        data = &comp_buf[0];
 
+        data = &comp_buf[0];
         send_packet_length = comp_len;
     }
     else {
@@ -1110,7 +1110,7 @@ uint8_t lowpan_iphc_encoding(int if_id, const uint8_t *dest, int dest_len,
             else if (dest_len == 2 &&
                      ipv6_buf->destaddr.uint32[2] == HTONL(0x000000ff) &&
                      ipv6_buf->destaddr.uint16[6] == HTONS(0xfe00) &&
-                     ipv6_buf->destaddr.uint16[7] == *((uint16_t *) dest))) {
+                     ipv6_buf->destaddr.uint16[7] == *((uint16_t *) dest)) {
                 /* 0 bits. The address is derived using context information
                  * and possibly the link-layer addresses.*/
                 lowpan_iphc[1] |= 0x03;
