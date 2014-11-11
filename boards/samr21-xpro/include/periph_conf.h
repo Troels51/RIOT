@@ -49,23 +49,23 @@ extern "C" {
  * @name UART configuration
  * @{
  */
-#define UART_NUMOF         (1U)
-#define UART_0_EN          1
-#define UART_1_EN          0
-#define UART_2_EN          0
-#define UART_3_EN          0
-#define UART_IRQ_PRIO      1
+#define UART_NUMOF          (1U)
+#define UART_0_EN           1
+#define UART_1_EN           0
+#define UART_2_EN           0
+#define UART_3_EN           0
+#define UART_IRQ_PRIO       1
 
 /* UART 0 device configuration */
-#define UART_0_DEV         SERCOM0->USART
-#define UART_0_IRQ         SERCOM0_IRQn
-#define UART_0_ISR         isr_sercom0
+#define UART_0_DEV          SERCOM0->USART
+#define UART_0_IRQ          SERCOM0_IRQn
+#define UART_0_ISR          isr_sercom0
 /* UART 0 pin configuration */
-#define UART_0_PORT        (PORT->Group[0])
-#define UART_0_TX_PIN      PIN_PA04
-#define UART_0_RX_PIN      PIN_PA05
-#define UART_0_PINS        (PORT_PA04 | PORT_PA05)
-#define UART_0_REF_F       (8000000UL)
+#define UART_0_PORT         (PORT->Group[0])
+#define UART_0_TX_PIN       PIN_PA04
+#define UART_0_RX_PIN       PIN_PA05
+#define UART_0_PINS         (PORT_PA04 | PORT_PA05)
+#define UART_0_REF_F        (8000000UL)
 
 
 /* UART 1 device configuration */
