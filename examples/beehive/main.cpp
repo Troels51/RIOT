@@ -22,7 +22,6 @@ const shell_command_t shell_commands[] = {
     //{"server", "Starts a UDP server", udp_server},
     //{"send", "Send a UDP datagram", udp_send},
     {"send", "send pure message", send_to_uart1},
-    {"http", "Send http request", http_post},
     {NULL, NULL, NULL}
 };
 

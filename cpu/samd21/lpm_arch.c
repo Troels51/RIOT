@@ -19,27 +19,54 @@
  */
 
 #include "arch/lpm_arch.h"
-
+#include "cpu.h"
+#define ENABLE_DEBUG (1)
+#include "debug.h"
 void lpm_arch_init(void)
 {
-    // TODO
+    lpm_awake();
 }
 
 enum lpm_mode lpm_arch_set(enum lpm_mode target)
 {
-    // TODO
-    return 0;
+	//DEBUG("LPM: %d \n", target);
+	switch(target)
+	{
+	case LPM_ON:
+		break;
+	case LPM_IDLE:
+		PM->SLEEP.bit.IDLE = 3;
+		break;
+	case LPM_SLEEP:
+		PM->SLEEP.bit.IDLE = 4;
+		break;
+	case LPM_POWERDOWN:
+		break;
+	case LPM_OFF:
+		break;
+
+	}
+	//se__WFI(); //Wait for interrupt
+    return target;
 }
 
 enum lpm_mode lpm_arch_get(void)
 {
-    // TODO
-    return 0;
+    uint32_t mode = PM->SLEEP.bit.IDLE;
+    switch(mode)
+    {
+    	case 1:
+    		return LPM_IDLE;
+    	case 4:
+    		return LPM_SLEEP;
+    	default:
+    		return 0;
+    }
 }
 
 void lpm_arch_awake(void)
 {
-    // TODO
+	PM->SLEEP.bit.IDLE = 0;
 }
 
 void lpm_arch_begin_awake(void)

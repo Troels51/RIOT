@@ -107,7 +107,6 @@ void chardev_loop(ringbuffer_t *rb)
                     msg_reply(&m, &m);
             }
         }
-
         if (rb->avail && (r != NULL)) {
             DEBUG("Data is available\n");
             unsigned state = disableIRQ();
@@ -119,7 +118,6 @@ void chardev_loop(ringbuffer_t *rb)
             m.sender_pid = reader_pid;
             m.type = OPEN;
             m.content.ptr = (char *)r;
-
             msg_reply(&m, &m);
 
             r = NULL;

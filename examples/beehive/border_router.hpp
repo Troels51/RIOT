@@ -18,8 +18,13 @@ extern "C" {
 #include "simcom.h"
 extern ipv6_addr_t *abr_addr;
 extern kernel_pid_t gsm_handler_pid;
+kernel_pid_t udp_handler_pid;
+char udp_server_stack_buffer[1024];
+
 
 }
+#define UDP_BUFFER_SIZE     (64)
+#define SERVER_PORT     (0xFF01)
 #define RADIO_CHANNEL (11)
 template <typename RouterInterface>
 class BorderRouter : private RouterInterface
@@ -27,10 +32,6 @@ class BorderRouter : private RouterInterface
 	using RouterInterface::transmit_ipv6;
 
 public:
-	static kernel_pid_t get_serial_reader(void)
-	{
-		return 0; //TODO:
-	}
 	static int sixlowpan_lowpan_border_init(int if_id)
 	{	
 	    transceiver_command_t tcmd;
@@ -42,18 +43,7 @@ public:
 		net_if_set_src_address_mode(0, NET_IF_TRANS_ADDR_M_SHORT);
 		uint8_t id = net_if_get_hardware_address(0);
 
-	    // serial_reader_pid = thread_create(
-	    //                         serial_reader_stack, READER_STACK_SIZE,
-	    //                         PRIORITY_MAIN - 1, CREATE_STACKTEST,
-	    //                         serial_reader_f, NULL,"serial_reader");
-	    ip_process_pid = thread_create(ip_process_buf, IP_PROCESS_STACKSIZE,
-	                                   PRIORITY_MAIN - 1, CREATE_STACKTEST,
-	                                   border_process_lowpan, NULL,
-	                                   "border_process_lowpan");
 
-	    if (ip_process_pid == KERNEL_PID_UNDEF) {
-	        return 0;
-	    }
         net_if_set_hardware_address(0, id);
 
 	    uint8_t state = rpl_init(0);
@@ -97,41 +87,18 @@ public:
 	    tcmd.data = &chan;
 	    m.type = SET_CHANNEL;
 	    m.content.ptr = (char*) &tcmd;
-
 	    msg_send_receive(&m, &m, transceiver_pid);
+	    
+	    udp_server();
+	    if (udp_handler_pid == KERNEL_PID_UNDEF) {
+	        return 0;
+	    }
 	    printf("Channel set to %u\n", RADIO_CHANNEL);
 
 	    puts("Transport layer initialized");
 
 
 	    return 1;
-	};
-	static void *border_process_lowpan(void* arg)
-	{
-		msg_t m;
-
-		while (1) {
-		    msg_receive(&m);
-		    ipv6_hdr_t *ipv6_buf = (ipv6_hdr_t *)m.content.ptr;
-
-		    if (ipv6_buf->nextheader == IPV6_PROTO_NUM_ICMPV6) {
-		        icmpv6_hdr_t *icmp_buf = (icmpv6_hdr_t *)(((uint8_t *)ipv6_buf) + IPV6_HDR_LEN);
-
-		        if (icmp_buf->type == ICMPV6_TYPE_REDIRECT) {
-		            continue;
-		        }
-
-		        if (icmpv6_demultiplex(icmp_buf) == 0) {
-		            continue;
-		        }
-
-		        /* Here, other ICMPv6 message types for ND may follow. */
-		    }
-
-		    /* TODO: Bei ICMPv6-Paketen entsprechende LoWPAN-Optionen verarbeiten und entfernen */    		
-		    DEBUG("CANNOT CRASH \n");
-		    transmit_ipv6(ipv6_buf);
-		}
 	};
 	/* UDP server thread */
 	static void udp_server(void)
@@ -173,7 +140,7 @@ public:
 	        if (recsize < 0) {
 	            printf("ERROR: recsize < 0!\n");
 	        }
-
+	        http_post_payload(buffer_main, recsize);
 	        printf("UDP packet received, payload: %s\n", buffer_main);
 	    }
 

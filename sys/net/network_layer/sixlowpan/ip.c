@@ -34,7 +34,7 @@
 
 #include "net_help.h"
 
-#define ENABLE_DEBUG    (0)
+#define ENABLE_DEBUG    (1)
 #if ENABLE_DEBUG
 #define DEBUG_ENABLED
 char addr_str[IPV6_MAX_ADDR_STR_LEN];
@@ -95,7 +95,6 @@ int ipv6_send_packet(ipv6_hdr_t *packet, ipv6_addr_t *next_hop)
 
             /* return -1; */
         }
-
         return length;
     }
     else {
@@ -389,8 +388,8 @@ void *ipv6_process(void *arg)
 
     while (1) {
         msg_receive(&m_recv_lowpan);
-
         ipv6_buf = (ipv6_hdr_t *) m_recv_lowpan.content.ptr;
+        DEBUG("destination address %s\n", ipv6_addr_to_str(addr_str, IPV6_MAX_ADDR_STR_LEN, &ipv6_buf->destaddr));
 
         /* identifiy packet */
         nextheader = &ipv6_buf->nextheader;
