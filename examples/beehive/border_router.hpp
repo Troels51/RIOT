@@ -25,6 +25,7 @@ char udp_server_stack_buffer[1024];
 }
 #define UDP_BUFFER_SIZE     (64)
 #define SERVER_PORT     (0xFF01)
+#define TRANSCEIVER TRANSCEIVER_DEFAULT
 #define RADIO_CHANNEL (11)
 template <typename RouterInterface>
 class BorderRouter : private RouterInterface
@@ -35,21 +36,15 @@ public:
 	static int sixlowpan_lowpan_border_init(int if_id)
 	{	
 	    transceiver_command_t tcmd;
-    	msg_t m;
-	    ipv6_net_if_addr_t *addr = NULL;
-	    uint8_t abr_addr_initialized = 0;
-    	int32_t chan = RADIO_CHANNEL;
+	    msg_t m;
+	    int32_t chan = RADIO_CHANNEL;
+    	int id = net_if_get_hardware_address(0);
 
-		net_if_set_src_address_mode(0, NET_IF_TRANS_ADDR_M_SHORT);
-		uint8_t id = net_if_get_hardware_address(0);
+		net_if_set_hardware_address(0, id);
+		uint8_t state = rpl_init(0);
+		rpl_init_root();
+		ipv6_iface_set_routing_provider(rpl_get_next_hop);
 
-
-        net_if_set_hardware_address(0, id);
-
-	    uint8_t state = rpl_init(0);
-
-        rpl_init_root();
-        ipv6_iface_set_routing_provider(rpl_get_next_hop);
 
 	    /* add global address */
 	    ipv6_addr_t tmp;
@@ -59,48 +54,20 @@ public:
 	    ipv6_addr_set_by_eui64(&tmp, 0, &tmp);
 	    ipv6_net_if_add_addr(0, &tmp, NDP_ADDR_STATE_PREFERRED, 0, 0, 0);
 
-	    if (!sixlowpan_lowpan_init_interface(if_id)) {
-	        return 0;
-	    }
-
-	    while (net_if_iter_addresses(if_id, (net_if_addr_t **) &addr)) {
-	        if (!ipv6_addr_is_multicast(addr->addr_data) &&
-	            !ipv6_addr_is_link_local(addr->addr_data) &&
-	            !ipv6_addr_is_loopback(addr->addr_data) &&
-	            !ipv6_addr_is_unique_local_unicast(addr->addr_data)) {
-	            abr_addr_initialized = 1;
-	            abr_addr = addr->addr_data;
-	            break;
-	        }
-	    }
-
-	    if (!abr_addr_initialized) {
-	        DEBUG("sixlowpan_lowpan_border_init(): A prefix must be initialized to"
-	              "interface %d first", if_id);
-	        return 0;
-	    }
-
-        ipv6_init_as_router();
-
+	    ipv6_init_as_router();
 	    /* set channel to 11 */
-	    tcmd.transceivers = TRANSCEIVER_DEFAULT;
+	    tcmd.transceivers = TRANSCEIVER;
 	    tcmd.data = &chan;
 	    m.type = SET_CHANNEL;
-	    m.content.ptr = (char*) &tcmd;
+	    m.content.ptr = (char*)(&tcmd);
+
 	    msg_send_receive(&m, &m, transceiver_pid);
-	    
-	    udp_server();
-	    if (udp_handler_pid == KERNEL_PID_UNDEF) {
-	        return 0;
-	    }
 	    printf("Channel set to %u\n", RADIO_CHANNEL);
 
+	    udp_server();
 	    puts("Transport layer initialized");
-
-
-	    return 1;
 	};
-	/* UDP server thread */
+
 	static void udp_server(void)
 	{
 	    kernel_pid_t udp_server_thread_pid = thread_create(udp_server_stack_buffer,
@@ -140,8 +107,8 @@ public:
 	        if (recsize < 0) {
 	            printf("ERROR: recsize < 0!\n");
 	        }
-	        http_post_payload(buffer_main, recsize);
 	        printf("UDP packet received, payload: %s\n", buffer_main);
+	        http_post_payload(buffer_main, recsize);
 	    }
 
 	    socket_base_close(sock);
