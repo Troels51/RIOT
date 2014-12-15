@@ -46,7 +46,7 @@ enum lpm_mode lpm_arch_set(enum lpm_mode target)
 		break;
 
 	}
-	//se__WFI(); //Wait for interrupt
+	__WFI(); //Wait for interrupt
     return target;
 }
 

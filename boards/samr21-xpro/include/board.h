@@ -85,10 +85,6 @@ extern "C" {
 #define LED_RED_OFF         LED_OFF
 #define LED_RED_TOGGLE      LED_TOGGLE
 /** @} */
-/**
- * Define the type for the radio packet length for the transceiver
- */
-typedef uint8_t radio_packet_length_t;
 
 /**
  * @brief Define the type for the radio packet length for the transceiver

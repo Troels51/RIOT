@@ -22,8 +22,8 @@
 
 #include "rpl/rpl_of_manager.h"
 #include "of0.h"
-#include "of_mrhof.h"
-#include "etx_beaconing.h"
+//#include "of_mrhof.h"
+//#include "etx_beaconing.h"
 #include "rpl/rpl_config.h"
 
 #define ENABLE_DEBUG (0)
@@ -35,11 +35,11 @@ void rpl_of_manager_init(ipv6_addr_t *my_address)
 {
     /* insert new objective functions here */
     objective_functions[0] = rpl_get_of0();
-    objective_functions[1] = rpl_get_of_mrhof();
+    //objective_functions[1] = rpl_get_of_mrhof();
 
     if (RPL_DEFAULT_OCP == 1) {
         DEBUG("%s, %d: INIT ETX BEACONING\n", __FILE__, __LINE__);
-        etx_init_beaconing(my_address);
+        //etx_init_beaconing(my_address);
     }
 }
 

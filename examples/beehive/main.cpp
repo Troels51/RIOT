@@ -27,8 +27,7 @@ const shell_command_t shell_commands[] = {
 
 int main(void)
 {
-    // /puts("Beehive version: "APP_VERSION);
-
+    // /puts("Beehivpse version: "APP_VERSION);
 
     posix_open(uart0_handler_pid, 0);
     net_if_set_src_address_mode(0, NET_IF_TRANS_ADDR_M_SHORT);

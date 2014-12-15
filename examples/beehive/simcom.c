@@ -245,7 +245,7 @@ int wait_for_string(char* string, int timeout)
 	while((timeout_counter < timeout)){
 		timeout_counter++;
 		readline(buffer, sizeof(buffer)); //A response is usually <CR><LF>response<CR><LF>
-		DEBUG("readline: \"%s\", counter: %d, timeout: %d \n", buffer, timeout_counter, timeout);
+		//DEBUG("readline: \"%s\", counter: %d, timeout: %d \n", buffer, timeout_counter, timeout);
 		if(strlen(buffer) == 0) continue;
 		if(strstr(buffer, string) != NULL) return 0;
 		if(strstr(buffer, "CME ERROR") != NULL) return -1;

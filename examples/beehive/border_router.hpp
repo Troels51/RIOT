@@ -19,7 +19,7 @@ extern "C" {
 extern ipv6_addr_t *abr_addr;
 extern kernel_pid_t gsm_handler_pid;
 kernel_pid_t udp_handler_pid;
-char udp_server_stack_buffer[1024];
+char udp_server_stack_buffer[1024+512];
 
 
 }
@@ -65,6 +65,7 @@ public:
 	    printf("Channel set to %u\n", RADIO_CHANNEL);
 
 	    udp_server();
+
 	    puts("Transport layer initialized");
 	};
 
@@ -107,8 +108,9 @@ public:
 	        if (recsize < 0) {
 	            printf("ERROR: recsize < 0!\n");
 	        }
-	        printf("UDP packet received, payload: %s\n", buffer_main);
 	        http_post_payload(buffer_main, recsize);
+	        printf("UDP packet received, payload: %s\n", buffer_main);
+	        
 	    }
 
 	    socket_base_close(sock);

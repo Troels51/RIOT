@@ -90,7 +90,7 @@ extern "C" {
 
 /* Stack size for transceiver thread */
 #ifndef TRANSCEIVER_STACK_SIZE
-#define TRANSCEIVER_STACK_SIZE      (1024)
+#define TRANSCEIVER_STACK_SIZE      (512+256)
 #endif
 
 #ifndef PAYLOAD_SIZE

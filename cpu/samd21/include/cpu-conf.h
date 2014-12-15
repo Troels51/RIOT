@@ -30,10 +30,10 @@ extern "C" {
  * TODO: measure and adjust for the cortex-m0
  * @{
  */
-#define KERNEL_CONF_STACKSIZE_PRINTF    (256/2)
+#define KERNEL_CONF_STACKSIZE_PRINTF    (256)
 
 #ifndef KERNEL_CONF_STACKSIZE_DEFAULT
-#define KERNEL_CONF_STACKSIZE_DEFAULT   (1024+512) //1024
+#define KERNEL_CONF_STACKSIZE_DEFAULT   (1024) //1024
 #endif
 
 #define KERNEL_CONF_STACKSIZE_IDLE      (512)
@@ -41,7 +41,6 @@ extern "C" {
 #define TRICKLE_INTERVAL_STACKSIZE     (512)
 #define DAO_DELAY_STACKSIZE     (1024)
 #define RT_STACKSIZE     (512)
-//#define RT_STACKSIZE     (512)
 
 
 /** @} */

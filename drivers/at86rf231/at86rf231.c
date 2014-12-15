@@ -122,7 +122,7 @@ int at86rf231_on(void)
             DEBUG("at86rf231 : ERROR : could not enter RX_ON mode\n");
             return 0;
         }
-    } while (at86rf231_get_status() != AT86RF231_TRX_STATUS__RX_ON);
+    } while (at86rf231_get_status() != AT86RF231_TRX_STATUS__RX_ON );
 
     /* read RNG values into CSMA_SEED_0 */
     for (int i=0; i<7; i+=2) {
@@ -137,6 +137,9 @@ int at86rf231_on(void)
 
     /* change into reception mode */
     at86rf231_switch_to_rx();
+    at86rf231_reg_write(AT86RF231_REG__TRX_CTRL_2, AT86RF231_TRX_CTRL_2_MASK__RX_SAFE_MODE);
+
+    at86rf231_reg_write(AT86RF233_TRX_RPC, 0xff);
 
     return 1;
 }

@@ -27,7 +27,7 @@
 
 #include "msg.h"
 #include "rpl.h"
-#include "etx_beaconing.h"
+//#include "etx_beaconing.h"
 #include "of0.h"
 #include "of_mrhof.h"
 #include "trickle.h"
