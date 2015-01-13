@@ -9,7 +9,7 @@
 #include "chardev_thread.h"
 #include "thread.h"
 #include "posix_io.h"
-
+#include "periph/gpio.h"
 static char gsm_rx_buf_mem[128];
 static ringbuffer_t gsm_rx_buf;
 kernel_pid_t gsm_handler_pid = KERNEL_PID_UNDEF;
@@ -30,7 +30,11 @@ void simcom_init(void)
 {
 	ringbuffer_init(&gsm_rx_buf, gsm_rx_buf_mem, sizeof(gsm_rx_buf_mem));
 	uart_init(UART_1, 115200, rx_callback, 0, 0);
+	gpio_init_out(SIMCOM_POWER_SELECT, GPIO_PULLUP);
+	gpio_clear(SIMCOM_POWER_SELECT);
+	vtimer_usleep(1000000);
 
+	gpio_set(SIMCOM_POWER_SELECT);
     kernel_pid_t pid = thread_create(
                   gsm_thread_stack,
                   sizeof(gsm_thread_stack),
@@ -187,6 +191,7 @@ void http_post_payload(char* payload, int length)
 		http_concat_datacommand(url, payload+2);
 		break;
 	case 'c':
+		http_concat_command(url, payload+2);
 		break;
 	case 'n':
 		break;
@@ -195,6 +200,27 @@ void http_post_payload(char* payload, int length)
 	DEBUG("%s\n", url);
 	http_post(url);
 }
+void http_concat_command(char* url, char* payload)
+{
+	char* border_id = "81180295";
+	char* node = strtok(payload, "&");
+	char* sensor = strtok(NULL, "&");
+	char* value = strtok(NULL, "&");
+
+	strcat(url, PUTDATA);
+	strcat(url, REST_BORDER);
+	strcat(url, border_id);
+	strcat(url, "&");
+	strcat(url, node);
+	strcat(url, "&");
+	strcat(url, sensor);
+	strcat(url, "&");
+	strcat(url, value);
+
+	strcat(url, REST_TIMESTAMP);
+	strcat(url, "now");
+}
+
 void http_concat_datacommand(char* url, char* payload)
 {
 	char* border_id = "81180295";

@@ -96,6 +96,8 @@ typedef uint8_t radio_packet_length_t;
  */
 void board_init(void);
 
+
+#define SIMCOM_POWER_SELECT GPIO_9
 #ifdef __cplusplus
 }
 #endif

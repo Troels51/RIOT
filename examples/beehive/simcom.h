@@ -39,6 +39,7 @@ void tcp_send(char* string, int length);
 int wait_for_string(char* string, int timeout);
 int sendATAndWait(char* command, char* waitString, int timeout);
 
+
 #define OK              "OK"
 /*      SAPBR           */
 #define SETCONTYPE      "AT+SAPBR=3,1,\"CONTYPE\",\"GPRS\"\r\n"
@@ -61,7 +62,7 @@ void http_init(void);
 void http_post(char* url);
 void http_post_payload(char* payload, int length);
 void http_concat_datacommand(char* url, char* payload);
-
+void http_concat_command(char* url, char* payload);
 
 
 #ifdef __cplusplus

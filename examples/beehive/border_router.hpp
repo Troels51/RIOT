@@ -108,8 +108,8 @@ public:
 	        if (recsize < 0) {
 	            printf("ERROR: recsize < 0!\n");
 	        }
-	        http_post_payload(buffer_main, recsize);
 	        printf("UDP packet received, payload: %s\n", buffer_main);
+	        http_post_payload(buffer_main, recsize);
 	        
 	    }
 
